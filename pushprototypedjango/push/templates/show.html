@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{% block title %}Device: {{device.identifier}}{% endblock %}</h2>
+
+<dl>
+<dt>Identifier</dt>
+<dd>{{device.identifier}}</dd>
+<dt>Token</dt>
+<dd>{{device.currenttoken}}</dd>
+</dl>
+{% endblock %}

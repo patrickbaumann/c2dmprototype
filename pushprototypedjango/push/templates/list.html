@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{% block title %}List of Devices{% endblock %}</h2>
+
+<dl>
+{% for d in devices %}
+<dt><a href="/{{ d.identifier }}/">{{ d.identifier }}</a></dt>
+<dd><a href="/message/{{d.id}}/new">Send Message</a> ({{d.message_set.count}})</dd>
+{% endfor %}
+</dl>
+{% endblock %}

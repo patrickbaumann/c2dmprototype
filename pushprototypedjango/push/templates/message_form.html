@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{% block title %}Message for {{device.identifier}}{% endblock %}</h2>
+
+<form action="/message/{{device.id}}/new" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>
+
+{% endblock %}

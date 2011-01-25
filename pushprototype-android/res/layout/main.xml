@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical" 
+    android:fadeScrollbars="true" 
+    android:scrollbars="vertical"
+    >
+<TextView  
+    android:layout_height="wrap_content" 
+    android:text="@string/menutitle"
+    android:textStyle="bold" android:typeface="normal" android:layout_width="wrap_content" android:layout_gravity="center"
+/>
+<Button 
+    android:text="@string/menuregister" 
+    android:layout_width="match_parent" 
+    android:id="@+id/btnmenuregister" 
+    android:layout_height="wrap_content"
+    android:onClick="register"
+/>
+
+<Button 
+	android:text="@string/menunewmsg" 
+	android:layout_width="match_parent" 
+	android:id="@+id/btnmenunewmsg" 
+	android:layout_height="wrap_content"
+/>
+<Button 
+	android:text="@string/menuviewmsgs" 
+	android:layout_width="match_parent" 
+	android:id="@+id/btnmenuviewmsgs" 
+	android:layout_height="wrap_content" 
+/>
+<Button android:layout_width="match_parent" android:onClick="launchSettings" android:layout_height="wrap_content" android:text="@string/menusettings" android:id="@+id/btnmenusettings"></Button>
+
+
+</LinearLayout>

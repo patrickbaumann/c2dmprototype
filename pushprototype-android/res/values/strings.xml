@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menutitle">Main Menu</string>
+    <string name="app_name">PushPrototype</string>
+<string name="menunewmsg">Send Message</string>
+<string name="menuviewmsgs">List Messages</string>
+<string name="menusettings">Settings</string>
+<string name="settingstitle">Settings</string>
+<string name="webapp_url">http://192.168.2.111:8000/</string>
+<string name="webapp_url_title">Web App URL</string>
+<string name="webapp_url_summary">The URL of the webapp (e.g. http://someserver.com/webapp/</string>
+<string name="webapp_url_dialog_title">No idea....</string>
+<string name="menuregister">Register</string>
+<string name="menuauthorize">Authorize</string>
+</resources>
