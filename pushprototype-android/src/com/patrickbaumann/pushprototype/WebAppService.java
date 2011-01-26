@@ -19,6 +19,10 @@ import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.util.Log;
 
+
+/**	
+ * A service intended to interface with the pushprototypedjango applciation.
+ */
 public class WebAppService extends IntentService {
 	public static final String SEND_REGISTRATION_ID = "send_reg_id";
 	public static final String REGISTRATION_ID = "registration_id";
@@ -37,33 +41,51 @@ public class WebAppService extends IntentService {
 	{
 		if(intent.getAction().equals(SEND_REGISTRATION_ID))
 		{
-			sendRegistrationId(intent.getStringExtra(REGISTRATION_ID), intent);
+			sendRegistrationId(intent.getStringExtra(REGISTRATION_ID));
 		}		
 	}
 	
-	public void sendRegistrationId(String registrationId, Intent intent)
+	/** 
+	 * Sends a registration ID received in response to a c2dm registration request
+	 * to the pushprototypedjango application. The address to which the id is sent is 
+	 * stored in shared preferences.
+	 * 
+	 * @param registrationId
+	 * @see Prefs
+	 */
+	private void sendRegistrationId(String registrationId)
 	{
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-    	List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
+        // Get the unique phone id
+    	String phoneid = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+        if(phoneid == null){phoneid = "emulator";} // emulator may return null with some APIs
+        Log.e("PushPrototype", "UID of phone: " + phoneid);        
         
-        String phoneid = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
-        Log.e("PushPrototeyp", phoneid);
-        if(phoneid == null){phoneid = "emulator";}            
+    	List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
         nameValuePairs.add(new BasicNameValuePair("phoneid", phoneid));    
     	nameValuePairs.add(new BasicNameValuePair("registrationid", registrationId));    
-    	
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+    	// now let's try to post to the server.    	
     	try {
 			URI uri = new URI(prefs.getString("webapp_url", "http://192.168.2.111/")+"push/register/");
 			HttpPost post = new HttpPost(uri);
-	        post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
-	        HttpClient httpclient = new DefaultHttpClient();
+
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
+	        
+			HttpClient httpclient = new DefaultHttpClient();
 	        HttpResponse response = httpclient.execute(post);
+	        
 	        Log.e("PushPrototype", response.getStatusLine().toString());
-			prefs.edit().putString("registrationId", registrationId);
+		
+	        // let's store the registrationId to prefs for the time being
+	        // TODO: find better way to save this (prefs seems misguided)
+	        prefs.edit().putString("registrationId", registrationId);
+    	
     	} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Log.e("PushPrototype", e.getMessage());
+    		// We may have caught uri parse, connectivity, etc. exception
+    		// just log it.
+    		Log.e("PushPrototype", e.getMessage());
 		}
 	}
 
