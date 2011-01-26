@@ -35,7 +35,7 @@ public class C2DMReciever extends BroadcastReceiver {
     
     public void handleMessage(Context context, Intent intent)
     {
-    	String msg = "Message received" + intent.getStringExtra("message");
+    	String msg = "Message received: " + intent.getStringExtra("message");
     	Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
        
