@@ -12,6 +12,8 @@ Setup
 -----
 *Aside from the exceptions below, these apps are pretty vanilla Android and Django configurations.*
 
+* If you haven't already, you'll need to register your gmail or google apps address here: http://code.google.com/android/c2dm/signup.html
+
 * Before running the Django application, rename pushprototypedjango/push/authentication.default.py to pushprototypedjango/push/authentication.py::
    
       mv pushprototypedjango/push/authentication.default.py pushprototypedjango/push/authentication.py
