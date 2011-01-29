@@ -20,17 +20,17 @@
 />
 
 <Button 
-	android:text="@string/menurecord" 
-	android:layout_width="match_parent" 
-	android:id="@+id/btnmenurecord" 
-	android:layout_height="wrap_content"
-	android:onClick="toggleRecord"
+    android:text="@string/menurecord" 
+    android:layout_width="match_parent" 
+    android:id="@+id/btnmenurecord" 
+    android:layout_height="wrap_content"
+    android:onClick="toggleRecord"
 />
 <Button 
-	android:text="@string/menuviewmsgs" 
-	android:layout_width="match_parent" 
-	android:id="@+id/btnmenuviewmsgs" 
-	android:layout_height="wrap_content" 
+    android:text="@string/menuviewmsgs" 
+    android:layout_width="match_parent" 
+    android:id="@+id/btnmenuviewmsgs" 
+    android:layout_height="wrap_content" 
 />
 <Button android:layout_width="match_parent" android:onClick="launchSettings" android:layout_height="wrap_content" android:text="@string/menusettings" android:id="@+id/btnmenusettings"></Button>
 
