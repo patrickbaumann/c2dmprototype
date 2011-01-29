@@ -31,6 +31,7 @@
     android:layout_width="match_parent" 
     android:id="@+id/btnmenusendaudio" 
     android:layout_height="wrap_content" 
+    android:onClick="sendAudio"
 />
 <Button android:layout_width="match_parent" android:onClick="launchSettings" android:layout_height="wrap_content" android:text="@string/menusettings" android:id="@+id/btnmenusettings"></Button>
 

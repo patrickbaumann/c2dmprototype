@@ -34,19 +34,23 @@ public class mainmenu extends Activity {
         startActivity(new Intent(this, Prefs.class));
     }
 
-    public void launchLogin(View v)
-    {
-        startActivity(new Intent(this, Prefs.class));
-    }    
-
     public void register(View v)
     {
         Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
         registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
         registrationIntent.putExtra("sender", "baumannpat@gmail.com");
         startService(registrationIntent);
-    }    
-
+    }
+    
+    public void sendAudio(View v)
+    {
+        // the registration was successful, package an intent to send to the webappservice
+        Intent registrationIntent = new Intent(this, WebAppService.class);
+        registrationIntent.setAction(WebAppService.SEND_AUDIO);
+        registrationIntent.putExtra(WebAppService.AUDIO_FILE_NAME, tempFileName());
+        startService(registrationIntent);         
+    }
+    
     public void toggleRecord(View v)
     {
         if(isRecording)
@@ -58,7 +62,7 @@ public class mainmenu extends Activity {
                         
 
             try {
-                FileInputStream f= new FileInputStream(getFilesDir().toString() + "/tempfile.mp4");
+                FileInputStream f= new FileInputStream(tempFileName());
                 
                 player.setDataSource(f.getFD());
                 player.prepare();
@@ -79,7 +83,7 @@ public class mainmenu extends Activity {
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-            recorder.setOutputFile(getFilesDir().toString() + "/tempfile.mp4");
+            recorder.setOutputFile(tempFileName());
             try {
                 recorder.prepare();
                 recorder.start();
@@ -91,6 +95,10 @@ public class mainmenu extends Activity {
                 recorder.reset();
             }
         }
+    }
+
+    private String tempFileName() {
+        return getFilesDir().toString() + "/tempfile.mp4";
     }
 
     

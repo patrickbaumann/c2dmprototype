@@ -1,15 +1,20 @@
 package com.patrickbaumann.pushprototype;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.app.IntentService;
@@ -27,6 +32,9 @@ public class WebAppService extends IntentService {
     public static final String SEND_REGISTRATION_ID = "send_reg_id";
     public static final String REGISTRATION_ID = "registration_id";
 
+    public static final String SEND_AUDIO = "send_audio_message";
+    public static final String AUDIO_FILE_NAME = "audio_file";
+
     public WebAppService()
     {
         super("WebAppService");
@@ -42,7 +50,11 @@ public class WebAppService extends IntentService {
         if(intent.getAction().equals(SEND_REGISTRATION_ID))
         {
             sendRegistrationId(intent.getStringExtra(REGISTRATION_ID));
-        }		
+        }
+        else if(intent.getAction().equals(SEND_AUDIO))
+        {
+            sendAudio(intent.getStringExtra(AUDIO_FILE_NAME));
+        }
     }
 
     /** 
@@ -56,19 +68,15 @@ public class WebAppService extends IntentService {
     private void sendRegistrationId(String registrationId)
     {
         // Get the unique phone id
-        String phoneid = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
-        if(phoneid == null){phoneid = "emulator";} // emulator may return null with some APIs
-        Log.e("PushPrototype", "UID of phone: " + phoneid);
+        String phoneid = getPhoneId();
 
         List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
         nameValuePairs.add(new BasicNameValuePair("phoneid", phoneid));    
         nameValuePairs.add(new BasicNameValuePair("registrationid", registrationId));    
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         // now let's try to post to the server.    	
         try {
-            URI uri = new URI(prefs.getString("webapp_url", "http://192.168.2.111/")+"push/register/");
+            URI uri = new URI(getWebAppUrl()+"push/register/");
             HttpPost post = new HttpPost(uri);
 
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
@@ -77,11 +85,6 @@ public class WebAppService extends IntentService {
             HttpResponse response = httpclient.execute(post);
 
             Log.e("PushPrototype", response.getStatusLine().toString());
-
-            // let's store the registrationId to prefs for the time being
-            // TODO: find better way to save this (prefs seems misguided)
-            prefs.edit().putString("registrationId", registrationId);
-
         } catch (Exception e) {
             // We may have caught uri parse, connectivity, etc. exception
             // just log it.
@@ -89,5 +92,40 @@ public class WebAppService extends IntentService {
         }
     }
 
+    private String getWebAppUrl() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return prefs.getString("webapp_url", "http://192.168.2.111/");
+    }
 
+    private String getPhoneId() {
+        String phoneid = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+        if(phoneid == null){phoneid = "emulator";} // emulator may return null with some APIs
+        Log.e("PushPrototype", "UID of phone: " + phoneid);
+        return phoneid;
+    }
+    
+    private void sendAudio(String audioFileName)
+    {
+        // let's try to post to the server.     
+        try {
+            URI uri = new URI(getWebAppUrl()+"push/message/");
+            HttpPost post = new HttpPost(uri);
+
+            String phoneid = getPhoneId();
+            post.getParams().setParameter("phoneid", phoneid);
+            File audioFile = new File(audioFileName);
+            post.getParams().setParameter("audio", audioFile);
+            
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(post);
+
+            Log.e("PushPrototype", response.getStatusLine().toString());
+
+        } catch (Exception e) {
+            // We may have caught uri parse, connectivity, etc. exception
+            // just log it.
+            Log.e("PushPrototype", e.getMessage());
+        }
+        
+    }
 }

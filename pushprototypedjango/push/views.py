@@ -71,6 +71,20 @@ def create_message(request, identifierid):
     options = {'device': device, 'form':MessageForm()}
     return render_to_response('message_form.html', options,context_instance=RequestContext(request))
     
-
+@csrf_exempt
+def message_recieve(request):
+    print "GOT IT"
+    print request.POST
+    if "audio" in request.POST and "phoneid" in request.POST:
+        device = get_object_or_404(Device, identifier=request.POST["phoneid"])
+        message = device.message_set.create(content=request.POST["audio"])
+        return HttpResponse("POISTED!", None, 200)
+        
+    # not a post, let's pass a MessageForm object to create the form
+    #options = {'device': device, 'form':MessageForm()}
+    #return render_to_response('message_form.html', options,context_instance=RequestContext(request))
+    return HttpResponse("DAMMIT", None, 403)
+        
 class MessageForm(forms.Form):
     message = forms.CharField(max_length=1024)
+    
