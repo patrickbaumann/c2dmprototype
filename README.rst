@@ -29,3 +29,5 @@ Setup
       LSID=asl;dfjalskdjflasjdfl...
    
 * Paste the AUTH line after the '=' into authentication.py between the quotation marks.
+
+* In order to build the android application, you'll need to download and include the jars that are released as part of the Apache HttpClient libraries in your build path. You can download the latest libraries here: http://hc.apache.org/downloads.cgi
