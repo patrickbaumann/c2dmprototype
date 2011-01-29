@@ -73,11 +73,17 @@ def create_message(request, identifierid):
     
 @csrf_exempt
 def message_recieve(request):
-    print "GOT IT"
-    print request.POST
-    if "audio" in request.POST and "phoneid" in request.POST:
+    print "GOT IT!"
+    
+    
+    if "audio" in request.FILES and "phoneid" in request.POST:
+        print "Getting device..."
         device = get_object_or_404(Device, identifier=request.POST["phoneid"])
-        message = device.message_set.create(content=request.POST["audio"])
+        print "opening file..."
+        destination = open('temp.mp4', 'wb+')
+        destination.write(request.FILES['audio'].read())
+        destination.close
+        print "closed file"
         return HttpResponse("POISTED!", None, 200)
         
     # not a post, let's pass a MessageForm object to create the form

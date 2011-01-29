@@ -6,15 +6,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.app.IntentService;
@@ -23,6 +21,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.util.Log;
+
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+
 
 
 /**	
@@ -67,11 +71,9 @@ public class WebAppService extends IntentService {
      */
     private void sendRegistrationId(String registrationId)
     {
-        // Get the unique phone id
-        String phoneid = getPhoneId();
 
         List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
-        nameValuePairs.add(new BasicNameValuePair("phoneid", phoneid));    
+        nameValuePairs.add(new BasicNameValuePair("phoneid", getPhoneId()));    
         nameValuePairs.add(new BasicNameValuePair("registrationid", registrationId));    
 
         // now let's try to post to the server.    	
@@ -110,11 +112,20 @@ public class WebAppService extends IntentService {
         try {
             URI uri = new URI(getWebAppUrl()+"push/message/");
             HttpPost post = new HttpPost(uri);
+            
+            List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
+            nameValuePairs.add(new BasicNameValuePair("phoneid", getPhoneId()));    
+            
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-            String phoneid = getPhoneId();
-            post.getParams().setParameter("phoneid", phoneid);
+            StringBody phoneid = new StringBody(getPhoneId());
+            entity.addPart("phoneid", phoneid);
+            
             File audioFile = new File(audioFileName);
-            post.getParams().setParameter("audio", audioFile);
+            FileBody audioBin = new FileBody(audioFile);
+            entity.addPart("audio", audioBin);
+            
+            post.setEntity(entity);
             
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(post);
