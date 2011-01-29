@@ -20,10 +20,11 @@
 />
 
 <Button 
-	android:text="@string/menunewmsg" 
+	android:text="@string/menurecord" 
 	android:layout_width="match_parent" 
-	android:id="@+id/btnmenunewmsg" 
+	android:id="@+id/btnmenurecord" 
 	android:layout_height="wrap_content"
+	android:onClick="toggleRecord"
 />
 <Button 
 	android:text="@string/menuviewmsgs" 
