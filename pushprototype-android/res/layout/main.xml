@@ -27,9 +27,9 @@
     android:onClick="toggleRecord"
 />
 <Button 
-    android:text="@string/menuviewmsgs" 
+    android:text="@string/menusendaudio" 
     android:layout_width="match_parent" 
-    android:id="@+id/btnmenuviewmsgs" 
+    android:id="@+id/btnmenusendaudio" 
     android:layout_height="wrap_content" 
 />
 <Button android:layout_width="match_parent" android:onClick="launchSettings" android:layout_height="wrap_content" android:text="@string/menusettings" android:id="@+id/btnmenusettings"></Button>

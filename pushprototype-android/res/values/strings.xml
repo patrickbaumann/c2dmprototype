@@ -3,7 +3,7 @@
     <string name="menutitle">Main Menu</string>
     <string name="app_name">PushPrototype</string>
     <string name="menurecord">Record Message</string>
-    <string name="menuviewmsgs">List Messages</string>
+    <string name="menusendaudio">Send Message</string>
     <string name="menusettings">Settings</string>
     <string name="settingstitle">Settings</string>
     <string name="webapp_url">http://192.168.2.111:8000/</string>

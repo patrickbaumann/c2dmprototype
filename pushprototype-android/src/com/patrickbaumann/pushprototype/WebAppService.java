@@ -58,7 +58,7 @@ public class WebAppService extends IntentService {
         // Get the unique phone id
         String phoneid = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
         if(phoneid == null){phoneid = "emulator";} // emulator may return null with some APIs
-        Log.e("PushPrototype", "UID of phone: " + phoneid);        
+        Log.e("PushPrototype", "UID of phone: " + phoneid);
 
         List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
         nameValuePairs.add(new BasicNameValuePair("phoneid", phoneid));    
