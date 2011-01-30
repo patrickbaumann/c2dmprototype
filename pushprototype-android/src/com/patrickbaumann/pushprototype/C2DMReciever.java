@@ -29,7 +29,7 @@ public class C2DMReciever extends BroadcastReceiver {
         } else if (intent.getStringExtra("unregistered") != null) {
             Toast.makeText(context, "Registration not active", Toast.LENGTH_SHORT).show();
         } else if (registration != null) {
-            Toast.makeText(context, "Registration Recieved"+registration, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Registration Recieved: "+registration, Toast.LENGTH_SHORT).show();
 
             // the registration was successful, package an intent to send to the webappservice
             Intent registrationIntent = new Intent(context, WebAppService.class);
@@ -42,9 +42,13 @@ public class C2DMReciever extends BroadcastReceiver {
     public void handleMessage(Context context, Intent intent)
     {
         // we've received a message, simply post to user via Toast
-        String msg = "Message received: " + intent.getStringExtra("message");
+        String msg = "Message ID pushed: " + intent.getStringExtra("message");
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 
-        // TODO: change this to query the server based on a recived message id
+        // let's initiate the downloading of the message!
+        Intent messageIntent = new Intent(context, WebAppService.class);
+        messageIntent.setAction(WebAppService.GET_MESSAGE);
+        messageIntent.putExtra(WebAppService.MESSAGE_ID, intent.getStringExtra("message"));
+        context.startService(messageIntent);  
     }
 }

@@ -2,10 +2,12 @@ package com.patrickbaumann.pushprototype;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -38,6 +40,8 @@ public class WebAppService extends IntentService {
     public static final String SEND_AUDIO = "send_audio_message";
     public static final String AUDIO_FILE_NAME = "audio_file";
     
+    public static final String GET_MESSAGE = "get_message";
+    public static final String MESSAGE_ID = "message_id";
     
     // need a handler class for posting Toast messages as the spawning
     // threads are being destroyed before the message can be shown
@@ -87,6 +91,10 @@ public class WebAppService extends IntentService {
         {
             sendAudio(intent.getStringExtra(AUDIO_FILE_NAME));
         }
+        else if(intent.getAction().equals(GET_MESSAGE))
+        {
+            getMessage(intent.getStringExtra(MESSAGE_ID));
+        }
     }
 
     /** 
@@ -106,8 +114,7 @@ public class WebAppService extends IntentService {
 
         // now let's try to post to the server.    	
         try {
-            URI uri = new URI(getWebAppUrl()+"push/register/");
-            HttpPost post = new HttpPost(uri);
+            HttpPost post = generatePostObject("push/register/");
 
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
 
@@ -122,7 +129,7 @@ public class WebAppService extends IntentService {
     }
 
     private void verifyHttpResponseOk(HttpResponse response) throws Exception {
-        if(response.getStatusLine().getStatusCode() != 200)
+        if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
         {
             throw new Exception(response.getStatusLine().toString());
         }
@@ -145,8 +152,7 @@ public class WebAppService extends IntentService {
     {
         // let's try to post to the server.     
         try {
-            URI uri = new URI(getWebAppUrl()+"push/message/");
-            HttpPost post = new HttpPost(uri);
+            HttpPost post = generatePostObject("push/message/");
             
             List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
             nameValuePairs.add(new BasicNameValuePair("phoneid", getPhoneId()));    
@@ -173,5 +179,42 @@ public class WebAppService extends IntentService {
             toastHandler.post(new ToastText(e.getMessage()));
             Log.e("PushPrototype", e.getMessage());
         }
+    }
+    
+    private void getMessage(String messageId)
+    {
+        
+        List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
+        nameValuePairs.add(new BasicNameValuePair("phoneid", getPhoneId()));    
+        nameValuePairs.add(new BasicNameValuePair("messageid", messageId));    
+        
+        try {
+            HttpPost post = generatePostObject("message/get/");
+
+            post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(post);
+            
+            verifyHttpResponseOk(response);
+            
+            if(response.getFirstHeader("Content-Type").getValue().equals("audio/mp4"))
+            {
+                toastHandler.post(new ToastText("Received audio message!"));
+                // TODO: Store and play audio message
+            }
+            else
+            {
+                toastHandler.post(new ToastText("Recieved other message: " + response.getEntity().toString()));
+            }
+            
+        } catch (Exception e) {
+            toastHandler.post(new ToastText(e.getMessage()));
+        }
+    }
+
+    private HttpPost generatePostObject(String relativeUrl) throws URISyntaxException {
+        URI uri = new URI(getWebAppUrl()+relativeUrl);
+        return new HttpPost(uri);
     }
 }

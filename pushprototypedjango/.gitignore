@@ -4,3 +4,4 @@
 *.db
 *.tmp*
 authentication.py
+*.mp4

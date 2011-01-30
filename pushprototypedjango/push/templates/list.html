@@ -6,7 +6,20 @@
 <dl>
 {% for d in devices %}
 <dt><a href="/{{ d.identifier }}/">{{ d.identifier }}</a></dt>
-<dd><a href="/message/{{d.id}}/new">Send Message</a> ({{d.message_set.count}})</dd>
+<dd><a href="/message/{{d.id}}/new">New Message</a> ({{d.message_set.count}})
+<table>
+{% for m in d.message_set.all %}
+<tr>
+	<td><a href="/message/get/{{m.pk}}">
+	{% if m.isaudio %}
+	   Audio Message
+	{% else %}
+	   {{m.content}}
+	{% endif %}
+    </a></td><td><a href="/message/send/{{m.pk}}">Send</a></td>
+</tr>
+{% endfor %}
+</table></dd>
 {% endfor %}
 </dl>
 {% endblock %}

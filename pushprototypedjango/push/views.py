@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from models import Device 
+from models import Device, Message 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from pushprototypedjango.push.authentication import GOOGLE_TOKEN
@@ -45,31 +45,37 @@ def create_message(request, identifierid):
     
     if "message" in request.POST:
         message = device.message_set.create(content=request.POST["message"])
-        
-        # NOW SEND THE REQUEST TO GOOGLE SERVERS
-        # first we need an https connection that ignores the certificate (for now)
-        httpsconnection = httplib.HTTPSConnection("android.apis.google.com", 443)
-        
-        # we need the following params set per http://code.google.com/android/c2dm/index.html#push
-        params = urllib.urlencode({
-                 'registration_id': device.registrationid,
-                 'collapse_key': "message"+str(message.id),
-                 'data.message': str(message.content)
-                 })
-        # need the following headers set per http://code.google.com/android/c2dm/index.html#push
-        headers = { "Content-Type":"application/x-www-form-urlencoded",
-                    "Content-Length":len(params),
-                    "Authorization":"GoogleLogin auth=" + GOOGLE_TOKEN # TOKEN set manually in authentication.py
-                    }
-        
-        httpsconnection.request("POST", "/c2dm/send", params, headers)
-        
-        # assuming success, let's return the user to the device list for now
-        return redirect_to(request, "/", False)
+        return message_send(request, message.pk)
         
     # not a post, let's pass a MessageForm object to create the form
     options = {'device': device, 'form':MessageForm()}
     return render_to_response('message_form.html', options,context_instance=RequestContext(request))
+    
+def message_send(request, messageid):
+    message = get_object_or_404(Message, pk=messageid)
+    
+    # NOW SEND THE REQUEST TO GOOGLE SERVERS
+    # first we need an https connection that ignores the certificate (for now)
+    httpsconnection = httplib.HTTPSConnection("android.apis.google.com", 443)
+    
+    # we need the following params set per http://code.google.com/android/c2dm/index.html#push
+    params = urllib.urlencode({
+             'registration_id': message.device.registrationid,
+             'collapse_key': "message"+str(message.id),
+             'data.message': str(message.content),
+             'delay_when_idle':'TRUE',
+             })
+    # need the following headers set per http://code.google.com/android/c2dm/index.html#push
+    headers = { "Content-Type":"application/x-www-form-urlencoded",
+                "Content-Length":len(params),
+                "Authorization":"GoogleLogin auth=" + GOOGLE_TOKEN # TOKEN set manually in authentication.py
+                }
+    
+    httpsconnection.request("POST", "/c2dm/send", params, headers)
+    
+    # assuming success, let's return the user to the device list for now
+    return redirect_to(request, "/", False)
+    
     
 @csrf_exempt
 def message_recieve(request):
@@ -79,8 +85,9 @@ def message_recieve(request):
     if "audio" in request.FILES and "phoneid" in request.POST:
         print "Getting device..."
         device = get_object_or_404(Device, identifier=request.POST["phoneid"])
-        print "opening file..."
-        destination = open('temp.mp4', 'wb+')
+        message = device.message_set.create(content="AUDIO")
+        print "opening file..."+'media/'+str(message.pk)+'.mp4'
+        destination = open(message.filepath, 'wb+')
         destination.write(request.FILES['audio'].read())
         destination.close
         print "closed file"
@@ -90,7 +97,23 @@ def message_recieve(request):
     #options = {'device': device, 'form':MessageForm()}
     #return render_to_response('message_form.html', options,context_instance=RequestContext(request))
     return HttpResponse("DAMMIT", None, 403)
+
+@csrf_exempt
+def message_deliver(request, message_id=0):
+    if "messageid" in request.POST:
+        message_id = int(request.POST["messageid"])
         
+    print "Getting message..."
+    message = get_object_or_404(Message, pk=message_id)
+    #TODO: need to put some checking for correct device here eventually
+    
+    if message.isaudio():
+        contents = open(message.filepath(), 'rb')
+        h = HttpResponse(contents.read(),"audio/mp4",200,"audio/mp4")
+        h["Content-Disposition"]= "attachment; filename=message"+str(message.id)+".mp4"
+    else:
+        h = HttpResponse(message.content)
+    return h
+
 class MessageForm(forms.Form):
     message = forms.CharField(max_length=1024)
-    
