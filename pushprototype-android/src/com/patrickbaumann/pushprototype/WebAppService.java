@@ -20,9 +20,11 @@ import org.apache.http.protocol.HTTP;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.widget.Toast;
 
 
 
@@ -35,12 +37,41 @@ public class WebAppService extends IntentService {
 
     public static final String SEND_AUDIO = "send_audio_message";
     public static final String AUDIO_FILE_NAME = "audio_file";
+    
+    
+    // need a handler class for posting Toast messages as the spawning
+    // threads are being destroyed before the message can be shown
+    public Handler toastHandler;
+    
+    private class ToastText implements Runnable{
+        private String text;
+        public ToastText(String message)
+        {
+            text = message;
+        }
+        @Override
+        public void run() {
+            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+        }
+        
+    }
+    
+    
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        
+        toastHandler = new Handler(); // creating handler on main thread so
+                                      // that Toast is called on main thread
 
+    }
+    
+    
     public WebAppService()
     {
         super("WebAppService");
     }
-
+    
     @Override
     protected void onHandleIntent(Intent intent) {
         handleIntent(intent);
@@ -82,13 +113,20 @@ public class WebAppService extends IntentService {
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(post);
-
-            Log.e("PushPrototype", response.getStatusLine().toString());
+            
+            verifyHttpResponseOk(response);
         } catch (Exception e) {
-            // We may have caught uri parse, connectivity, etc. exception
-            // just log it.
+            toastHandler.post(new ToastText(e.getMessage()));
             Log.e("PushPrototype", e.getMessage());
         }
+    }
+
+    private void verifyHttpResponseOk(HttpResponse response) throws Exception {
+        if(response.getStatusLine().getStatusCode() != 200)
+        {
+            throw new Exception(response.getStatusLine().toString());
+        }
+        Log.e("PushPrototype", response.getStatusLine().toString());
     }
 
     private String getWebAppUrl() {
@@ -127,13 +165,13 @@ public class WebAppService extends IntentService {
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response = httpclient.execute(post);
 
-            Log.e("PushPrototype", response.getStatusLine().toString());
-
+            verifyHttpResponseOk(response);
+            toastHandler.post(new ToastText("Audio successfully sent!"));
+            
+        
         } catch (Exception e) {
-            // We may have caught uri parse, connectivity, etc. exception
-            // just log it.
+            toastHandler.post(new ToastText(e.getMessage()));
             Log.e("PushPrototype", e.getMessage());
         }
-        
     }
 }
