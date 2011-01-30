@@ -62,7 +62,7 @@ public class WebAppService extends IntentService {
         }
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
         }
         
     }
@@ -208,14 +208,8 @@ public class WebAppService extends IntentService {
             if(response.getFirstHeader("Content-Type").getValue().equals("audio/mp4"))
             {
 
-                FileOutputStream fileout = new FileOutputStream(getFilesDir().toString() + "/tempfile.mp4");
-                InputStreamReader isr = new InputStreamReader(response.getEntity().getContent());
-                while(isr.ready())
-                {
-                    fileout.write(isr.read());
-                }
-                fileout.flush();
-                fileout.close();
+                FileOutputStream ostream = new FileOutputStream(getFilesDir().toString() + "/tempfile.mp4");
+                response.getEntity().writeTo(ostream);
                 
                 FileInputStream filein = new FileInputStream(getFilesDir().toString() + "/tempfile.mp4");
                 MediaPlayer player = new MediaPlayer();

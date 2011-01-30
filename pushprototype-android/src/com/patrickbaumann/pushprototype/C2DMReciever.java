@@ -43,7 +43,6 @@ public class C2DMReciever extends BroadcastReceiver {
     {
         // we've received a message, simply post to user via Toast
         String msg = "Message ID pushed: " + intent.getStringExtra("message");
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 
         // let's initiate the downloading of the message!
         Intent messageIntent = new Intent(context, WebAppService.class);
