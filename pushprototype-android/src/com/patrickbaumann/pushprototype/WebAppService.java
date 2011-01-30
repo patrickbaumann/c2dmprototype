@@ -1,6 +1,12 @@
 package com.patrickbaumann.pushprototype;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,6 +28,7 @@ import org.apache.http.protocol.HTTP;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
@@ -200,16 +207,34 @@ public class WebAppService extends IntentService {
             
             if(response.getFirstHeader("Content-Type").getValue().equals("audio/mp4"))
             {
+
+                FileOutputStream fileout = new FileOutputStream(getFilesDir().toString() + "/tempfile.mp4");
+                InputStreamReader isr = new InputStreamReader(response.getEntity().getContent());
+                while(isr.ready())
+                {
+                    fileout.write(isr.read());
+                }
+                fileout.flush();
+                fileout.close();
+                
+                FileInputStream filein = new FileInputStream(getFilesDir().toString() + "/tempfile.mp4");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(filein.getFD());
+                player.prepare();
+                player.start();
+                
                 toastHandler.post(new ToastText("Received audio message!"));
                 // TODO: Store and play audio message
             }
             else
             {
-                toastHandler.post(new ToastText("Recieved other message: " + response.getEntity().toString()));
+                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+                response.getEntity().writeTo(ostream);
+                toastHandler.post(new ToastText("Recieved other message:"+ostream.toString()));
             }
             
         } catch (Exception e) {
-            toastHandler.post(new ToastText(e.getMessage()));
+            toastHandler.post(new ToastText("ERROR:" + e.getMessage()));
         }
     }
 

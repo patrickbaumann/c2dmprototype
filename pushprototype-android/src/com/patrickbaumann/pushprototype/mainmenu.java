@@ -97,7 +97,7 @@ public class mainmenu extends Activity {
         }
     }
 
-    private String tempFileName() {
+    public String tempFileName() {
         return getFilesDir().toString() + "/tempfile.mp4";
     }
 

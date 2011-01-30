@@ -62,7 +62,7 @@ def message_send(request, messageid):
     params = urllib.urlencode({
              'registration_id': message.device.registrationid,
              'collapse_key': "message"+str(message.id),
-             'data.message': str(message.content),
+             'data.message': str(message.id),
              'delay_when_idle':'TRUE',
              })
     # need the following headers set per http://code.google.com/android/c2dm/index.html#push
@@ -86,8 +86,7 @@ def message_recieve(request):
         print "Getting device..."
         device = get_object_or_404(Device, identifier=request.POST["phoneid"])
         message = device.message_set.create(content="AUDIO")
-        print "opening file..."+'media/'+str(message.pk)+'.mp4'
-        destination = open(message.filepath, 'wb+')
+        destination = open(message.filepath(), 'wb+')
         destination.write(request.FILES['audio'].read())
         destination.close
         print "closed file"
