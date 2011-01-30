@@ -4,3 +4,4 @@ bin
 .project
 gen
 .settings
+settings.xml

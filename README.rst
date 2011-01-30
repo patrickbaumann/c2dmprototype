@@ -13,7 +13,6 @@ Setup
 *Aside from the exceptions below, these apps are pretty vanilla Android and Django configurations.*
 
 * If you haven't already, you'll need to register your gmail or google apps address here: http://code.google.com/android/c2dm/signup.html
-
 * Before running the Django application, rename pushprototypedjango/push/authentication.default.py to pushprototypedjango/push/authentication.py::
    
       mv pushprototypedjango/push/authentication.default.py pushprototypedjango/push/authentication.py
@@ -29,5 +28,13 @@ Setup
       LSID=asl;dfjalskdjflasjdfl...
    
 * Paste the AUTH line after the '=' into authentication.py between the quotation marks.
-
 * In order to build the android application, you'll need to download and include the jars that are released as part of the Apache HttpClient libraries in your build path. You can download the latest libraries here: http://hc.apache.org/downloads.cgi
+* Before building your Android app, copy res/values/settings.default.xml to res/values/settings.xml, delete the lines with "REMOVE THIS LINE" and replace the email in the file with the email address you registered for the c2dm service.
+
+Running
+-------
+* Once you've cloned the repository, navigate to the /c2dmprototype/pushprototypedjango directory and start a development server by running ::
+      
+      python manage.py runserver 0.0.0.0:8000
+      
+* On your android phone or emulator with the official Google Android API 8 image, add a Google account to your phone via Settings -> Accounts & Sync -> Add Account -> Google. This is necessary in order to properly register the phone with the Google server.

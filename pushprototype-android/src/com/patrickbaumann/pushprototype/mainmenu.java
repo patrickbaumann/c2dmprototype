@@ -38,7 +38,7 @@ public class mainmenu extends Activity {
     {
         Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
         registrationIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
-        registrationIntent.putExtra("sender", "baumannpat@gmail.com");
+        registrationIntent.putExtra("sender", getString(R.string.sender_address));
         startService(registrationIntent);
     }
     
