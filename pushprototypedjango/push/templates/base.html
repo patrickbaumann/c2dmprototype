@@ -1,11 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>{% block title %}{% endblock %}</title>
-</head>
-<body>
-	<h1>Push Prototype</h1>
-	{% block content %}{% endblock %}
-</body>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        {% block extrastyle %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+    <!-- Container -->
+    <div id="container">
+        <div id="header">
+        <div id="branding">
+        {% block branding %}GeoCam CMUSV Practicum 2011 Prototype{% endblock %}
+        </div>
+        {% if user.is_authenticated %}
+        <div id="user-tools">Welcome <strong>{% firstof user.first_name user.username %}</strong>
+            {% block userlinks %}<a href="/admin/password_change/">Change password</a> / <a href="accounts/logout/">Log out</a>{% endblock %}</div>
+        {% endif %}
+        
+        </div>
+        <!-- END Header -->
+        <h1>Push Prototype</h1>
+        {% block content %}
+        {% endblock %}
+        </div>
+    <!-- END Container -->
+    </body>
 </html>

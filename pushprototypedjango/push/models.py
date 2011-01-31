@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from pushprototypedjango import settings
-import os
 
 # An android device which has registered with our server and can receive push notifications
 class Device(models.Model):
@@ -10,13 +9,14 @@ class Device(models.Model):
     user = models.ForeignKey(User, null=True, blank=True) # would be nice to tie to user, but this is a prototype after all
 
 # A message which has been sent (or is too be sent) to a device
-class Message(models.Model):
+class Msg(models.Model):
     content = models.CharField(max_length=2400) # message contents
     status = models.IntegerField(null=True, blank=True) # status of message (0, not pushed; 1, pushed; 2, retrieved or "sent")
     device = models.ForeignKey(Device)
-    
-    def filepath(self):
-        return os.path.join(settings.MEDIA_ROOT, str(self.pk)+".mp4")
+    recipient = models.ForeignKey(User, related_name='recieved_messages', null=True, blank=True)
+    sender = models.ForeignKey(User, related_name='sent_messages', null=True, blank=True)
+    audio = models.FileField(upload_to='audio/%Y/%m/%d')
+    created = models.DateTimeField(auto_now_add=True, editable=False)
     
     def isaudio(self):
-        return os.path.exists(Message.filepath(self))
+        return(self.content == 'AUDIO')
