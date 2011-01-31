@@ -7,9 +7,14 @@
     <string name="menusettings">Settings</string>
     <string name="settingstitle">Settings</string>
     <string name="webapp_url">http://192.168.2.111:8000/</string>
+    <string name="webapp_user_title">Web App Username</string>
+    <string name="webapp_user">geocam</string>
+    <string name="webapp_password_title">Web App Password</string>
+    <string name="webapp_password">geocam</string>
     <string name="webapp_url_title">Web App URL</string>
     <string name="webapp_url_summary">The URL of the webapp (e.g. http://someserver.com/webapp/</string>
     <string name="webapp_url_dialog_title">No idea....</string>
+    <string name="menulogin">WebApp Login</string>
     <string name="menuregister">Register</string>
     <string name="menuauthorize">Authorize</string>
 </resources>

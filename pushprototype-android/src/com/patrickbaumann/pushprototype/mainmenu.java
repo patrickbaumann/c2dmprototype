@@ -42,6 +42,17 @@ public class mainmenu extends Activity {
         startService(registrationIntent);
     }
     
+    public void login(View v)
+    {
+        // login to the django server, package an intent to send to the webappservice
+        Intent loginIntent = new Intent(this, WebAppService.class);
+        loginIntent.setAction(WebAppService.WEBAPP_LOGIN);
+        loginIntent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
+        loginIntent.putExtra("user", getString(R.string.webapp_user));
+        loginIntent.putExtra("password", getString(R.string.webapp_password));
+        startService(loginIntent);
+    }
+    
     public void sendAudio(View v)
     {
         // the registration was successful, package an intent to send to the webappservice

@@ -17,6 +17,10 @@ public class Prefs extends PreferenceActivity {
     private void setDefaultSettings(int settings) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(null == prefs.getString("webapp_url", null))
-            prefs.edit().putString("webapp_url", "http://192.168.2.112:8000");
+            prefs.edit().putString("webapp_url", getString(R.string.webapp_url));
+        if(null == prefs.getString("webapp_user", null))
+            prefs.edit().putString("webapp_user", getString(R.string.webapp_user));
+        if(null == prefs.getString("webapp_password", null))
+            prefs.edit().putString("webapp_password", getString(R.string.webapp_password));
     }
 }

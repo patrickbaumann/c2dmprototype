@@ -35,15 +35,15 @@ import android.provider.Settings.Secure;
 import android.util.Log;
 import android.widget.Toast;
 
-
-
 /**	
  * A service intended to interface with the pushprototypedjango applciation.
  */
 public class WebAppService extends IntentService {
     public static final String SEND_REGISTRATION_ID = "send_reg_id";
     public static final String REGISTRATION_ID = "registration_id";
-
+    public static final String WEBAPP_LOGIN = "login_to_django_server";
+    public static final String WEBAPP_USER = "user";
+    public static final String WEBAPP_PASSWORD = "password";
     public static final String SEND_AUDIO = "send_audio_message";
     public static final String AUDIO_FILE_NAME = "audio_file";
     
@@ -67,7 +67,6 @@ public class WebAppService extends IntentService {
         
     }
     
-    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -76,7 +75,6 @@ public class WebAppService extends IntentService {
                                       // that Toast is called on main thread
 
     }
-    
     
     public WebAppService()
     {
@@ -101,6 +99,10 @@ public class WebAppService extends IntentService {
         else if(intent.getAction().equals(GET_MESSAGE))
         {
             getMessage(intent.getStringExtra(MESSAGE_ID));
+        }
+        else if(intent.getAction().equals(WEBAPP_LOGIN))
+        {
+            webappLogin(intent.getStringExtra(WEBAPP_USER), intent.getStringExtra(WEBAPP_PASSWORD));
         }
     }
 
@@ -185,6 +187,32 @@ public class WebAppService extends IntentService {
         } catch (Exception e) {
             toastHandler.post(new ToastText(e.getMessage()));
             Log.e("PushPrototype", e.getMessage());
+        }
+    }
+    
+    private void webappLogin(String webappUser, String webappPassword)
+    {
+        // let's try to post to the server.     
+        try {
+            HttpPost post = generatePostObject("accounts/login/");
+            
+            List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();  
+            nameValuePairs.add(new BasicNameValuePair("username", webappUser));
+            nameValuePairs.add(new BasicNameValuePair("password", webappPassword));
+
+            post.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8)); 
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(post);
+                
+            verifyHttpResponseOk(response);
+            //String cookie = response.getFirstHeader("Set-Cookie").getValue();
+            //Set-Cookie: sessionid=da3dde46d5110cf33d23a1831589b322;
+
+            toastHandler.post(new ToastText("Web App login successful! cookie: "));
+        } catch (Exception e) {
+           toastHandler.post(new ToastText(e.getMessage()));
+           Log.e("PushPrototype", e.getMessage());
         }
     }
     

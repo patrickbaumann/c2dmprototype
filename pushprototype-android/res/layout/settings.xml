@@ -5,4 +5,12 @@
     android:key="webapp_url"
     android:title="@string/webapp_url_title"
 />
+<EditTextPreference
+    android:key="webapp_user"
+    android:title="@string/webapp_user_title"
+/>
+<EditTextPreference
+    android:key="webapp_password"
+    android:title="@string/webapp_password_title"
+/>
 </PreferenceScreen>

@@ -12,6 +12,13 @@
     android:textStyle="bold" android:typeface="normal" android:layout_width="wrap_content" android:layout_gravity="center"
 />
 <Button 
+    android:text="@string/menulogin" 
+    android:layout_width="match_parent" 
+    android:id="@+id/btnmenulogin" 
+    android:layout_height="wrap_content"
+    android:onClick="login"
+/>
+<Button 
     android:text="@string/menuregister" 
     android:layout_width="match_parent" 
     android:id="@+id/btnmenuregister" 
