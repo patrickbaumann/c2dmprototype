@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 try:
     from pushprototypedjango.push.authentication import GOOGLE_TOKEN
 except:
+    # this is a hack for the continuous integration server -adamg 1/31
     GOOGLE_TOKEN = 'bogus1234'
 from django import forms
 from django.template.context import RequestContext
