@@ -101,16 +101,15 @@ class TestLoggedInViews(TestCase):
         """ Add a Msg by http post"""
         
         #device = random.choice(Device.objects.all())
-        device = Device.objects.all()[1]
+        device = Device.objects.all()[0]
         phoneid = device.identifier
         audioFile = 'test.mp4'
-        self._createFile(filename=audioFile)
-        f = open(audioFile) 
-        response = self.client.post("push/message/", {'phoneid':phoneid, 
-                                                    'audio':f})
+        self._createFile(filename=audioFile, filesize=100*1024)
+        f = open(audioFile, "rb")
+        response = self.client.post("/push/message/",
+                                    data={'phoneid':phoneid, 'audio':f})
         f.close() 
-	print 'status code: %s' % response.status_code
-        self.assertEqual(response.status_code, 302, "Failed to move message from phone to web app")
+        self.assertEqual(response.status_code, 200, "Failed to move message from phone to web app")
 
     def testTextMsgCreate(self):
         """ Add a Msg by http post"""
