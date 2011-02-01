@@ -8,7 +8,10 @@ from django.core.files.base import ContentFile
 
 from django.shortcuts import get_object_or_404, render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from pushprototypedjango.push.authentication import GOOGLE_TOKEN
+try:
+    from pushprototypedjango.push.authentication import GOOGLE_TOKEN
+except:
+    GOOGLE_TOKEN = 'bogus1234'
 from django import forms
 from django.template.context import RequestContext
 from django.views.generic.simple import redirect_to
@@ -115,7 +118,6 @@ def message_send(request, messageid):
 @csrf_exempt
 def message_recieve(request):
     print "GOT IT!"
-
     if "audio" in request.FILES and "phoneid" in request.POST:
         print "Getting device..."
         device = get_object_or_404(Device, identifier=request.POST["phoneid"])
