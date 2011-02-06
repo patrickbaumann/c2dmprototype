@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -13,14 +16,34 @@ import android.widget.Toast;
 
 public class mainmenu extends Activity {
 
+    public class GpsLocationListener implements LocationListener
+    {
+        @Override
+        public void onLocationChanged(Location location) {
+            lat = location.getLatitude();
+            lon = location.getLongitude();
+        }
+        @Override
+        public void onProviderDisabled(String provider) {}
+        @Override
+        public void onProviderEnabled(String provider) {}
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    }
+    
     MediaRecorder recorder = new MediaRecorder();
     MediaPlayer player = new MediaPlayer();
     boolean isRecording = false;
+    double lat = 0;
+    double lon = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        LocationManager locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new GpsLocationListener());
     }
 
     @Override
@@ -59,6 +82,8 @@ public class mainmenu extends Activity {
         Intent registrationIntent = new Intent(this, WebAppService.class);
         registrationIntent.setAction(WebAppService.SEND_AUDIO);
         registrationIntent.putExtra(WebAppService.AUDIO_FILE_NAME, tempFileName());
+        registrationIntent.putExtra(WebAppService.LATITUDE, this.lat);
+        registrationIntent.putExtra(WebAppService.LONGITUDE, this.lon);
         startService(registrationIntent);         
     }
     

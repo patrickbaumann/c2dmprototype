@@ -17,7 +17,7 @@
     
     <!-- Send the registration id to the server -->
     <uses-permission android:name="android.permission.INTERNET" />
-    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     
     <application 
         android:icon="@drawable/icon" android:label="@string/app_name"

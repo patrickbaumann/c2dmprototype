@@ -46,7 +46,8 @@ public class WebAppService extends IntentService {
     public static final String WEBAPP_PASSWORD = "password";
     public static final String SEND_AUDIO = "send_audio_message";
     public static final String AUDIO_FILE_NAME = "audio_file";
-    
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
     public static final String GET_MESSAGE = "get_message";
     public static final String MESSAGE_ID = "message_id";
     
@@ -94,7 +95,7 @@ public class WebAppService extends IntentService {
         }
         else if(intent.getAction().equals(SEND_AUDIO))
         {
-            sendAudio(intent.getStringExtra(AUDIO_FILE_NAME));
+            sendAudio(intent.getStringExtra(AUDIO_FILE_NAME), intent.getDoubleExtra(LATITUDE, 0), intent.getDoubleExtra(LONGITUDE, 0));
         }
         else if(intent.getAction().equals(GET_MESSAGE))
         {
@@ -157,7 +158,7 @@ public class WebAppService extends IntentService {
         return phoneid;
     }
     
-    private void sendAudio(String audioFileName)
+    private void sendAudio(String audioFileName, double lat, double lon)
     {
         // let's try to post to the server.     
         try {
@@ -171,6 +172,13 @@ public class WebAppService extends IntentService {
             StringBody phoneid = new StringBody(getPhoneId());
             entity.addPart("phoneid", phoneid);
             
+            StringBody latitude = new StringBody(Double.toString(lat));
+            StringBody longitude = new StringBody(Double.toString(lon));
+            entity.addPart("lat", latitude);
+            entity.addPart("lon", longitude);
+            
+            
+            
             File audioFile = new File(audioFileName);
             FileBody audioBin = new FileBody(audioFile);
             entity.addPart("audio", audioBin);
@@ -181,7 +189,7 @@ public class WebAppService extends IntentService {
             HttpResponse response = httpclient.execute(post);
 
             verifyHttpResponseOk(response);
-            toastHandler.post(new ToastText("Audio successfully sent!"));
+            toastHandler.post(new ToastText("Audio successfully sent with lat:" + lat + ", lon:"+lon));
             
         
         } catch (Exception e) {
