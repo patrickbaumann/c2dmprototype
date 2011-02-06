@@ -177,8 +177,6 @@ public class WebAppService extends IntentService {
             entity.addPart("lat", latitude);
             entity.addPart("lon", longitude);
             
-            
-            
             File audioFile = new File(audioFileName);
             FileBody audioBin = new FileBody(audioFile);
             entity.addPart("audio", audioBin);

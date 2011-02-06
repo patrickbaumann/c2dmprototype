@@ -83,7 +83,7 @@ def create_message(request, identifierid):
     device = get_object_or_404(Device, pk=identifierid)
 
     if "message" in request.POST:
-        m = Msg.objects.create(device=device, content=request.POST["message"])
+        m = Msg.objects.create(device=device, content=request.POST["message"], lat=37.41029, lon=-122.05944)
         return message_send(request, m.pk)
 
     # not a post, let's pass a MessageForm object to create the form
@@ -119,10 +119,9 @@ def message_send(request, messageid):
 @csrf_exempt
 def message_recieve(request):
     print "GOT IT!"
-    if "audio" in request.FILES and "phoneid" in request.POST:
-        print "Getting device..."
-        device = get_object_or_404(Device, identifier=request.POST["phoneid"])
-        m = Msg.objects.create(device=device, content='AUDIO')
+    if "audio" in request.FILES and "phoneid" in request.POST and "lat" in request.POST and "lon" in request.POST:
+        d = get_object_or_404(Device, identifier=request.POST["phoneid"])
+        m = Msg.objects.create(device=d, content='AUDIO', lat=float(request.POST["lat"]), lon=float(request.POST["lon"]))
         file_content = ContentFile(request.FILES['audio'].read())
         file_format = os.path.splitext( request.FILES['audio'].name )[-1]
         try:
