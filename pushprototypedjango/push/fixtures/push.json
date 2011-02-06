@@ -1,1 +1,84 @@
-[{"pk": 1, "model": "push.device", "fields": {"registrationid": "APA91bEqz9JLFtsOpV0VH4EtcxX-Jv2G-VDMBDFojMWO5Y1S9pswECrv551Tu9HBEBLbxvqza38-bELfSQMYAhZkQ8Ort0TzUBzdoie6_fkYOnAnRd8lmqPCqAeVuOpd4R8nOnQawxiA", "identifier": "8225cfd8089e8bdc", "user": null}}, {"pk": 2, "model": "push.device", "fields": {"registrationid": "APA91bHgQNywglCGEDDusbIuvEBuLRlks3-cBAPIV2C1Y1hhb8moC_yUhivpmNIpymembTB86GWGkSgcaP5XIJt4pQJ1PZs8JSkAOzsWcA4i6Nn7sXKSTV_xpRoIcHA-tLYGGiLMMXKE", "identifier": "9774d56d682e549c", "user": null}}, {"pk": 1, "model": "push.msg", "fields": {"status": null, "sender": null, "created": "2011-01-31 03:58:14", "content": "AUDIO", "device": 1, "audio": "audio/2011/01/31/unknown2unknown035814.mp4", "recipient": null}}, {"pk": 2, "model": "push.msg", "fields": {"status": null, "sender": null, "created": "2011-01-31 03:59:34", "content": "AUDIO", "device": 1, "audio": "audio/2011/01/31/unknown2unknown035934.mp4", "recipient": null}}, {"pk": 3, "model": "push.msg", "fields": {"status": null, "sender": null, "created": "2011-01-31 04:00:07", "content": "Emergency!", "device": 1, "audio": "", "recipient": null}}, {"pk": 4, "model": "push.msg", "fields": {"status": null, "sender": null, "created": "2011-01-31 04:01:03", "content": "AUDIO", "device": 2, "audio": "audio/2011/01/31/unknown2unknown040103.mp4", "recipient": null}}, {"pk": 5, "model": "push.msg", "fields": {"status": null, "sender": null, "created": "2011-01-31 04:01:27", "content": "Earthquake!", "device": 2, "audio": "", "recipient": null}}]
+[
+{  "pk": 1, 
+    "model": "push.device", 
+    "fields": {
+        "registrationid": "APA91bEqz9JLFtsOpV0VH4EtcxX-Jv2G-VDMBDFojMWO5Y1S9pswECrv551Tu9HBEBLbxvqza38-bELfSQMYAhZkQ8Ort0TzUBzdoie6_fkYOnAnRd8lmqPCqAeVuOpd4R8nOnQawxiA", 
+        "identifier": "8225cfd8089e8bdc", 
+        "user": null}
+}, 
+{   "pk": 2, 
+    "model": "push.device", 
+    "fields": {
+        "registrationid": "APA91bHgQNywglCGEDDusbIuvEBuLRlks3-cBAPIV2C1Y1hhb8moC_yUhivpmNIpymembTB86GWGkSgcaP5XIJt4pQJ1PZs8JSkAOzsWcA4i6Nn7sXKSTV_xpRoIcHA-tLYGGiLMMXKE",
+        "identifier": "9774d56d682e549c", 
+        "user": null}
+}, 
+{   "pk": 1, 
+    "model": "push.msg", 
+    "fields": {
+        "status": null, 
+        "sender": null, 
+        "created": "2011-01-31 03:58:14", 
+        "content": "AUDIO", "device": 1, 
+        "audio": "audio/2011/01/31/unknown2unknown035814.mp4", 
+        "recipient": null,
+        "lat": 37.41059,
+        "lon": -122.08944
+        }
+}, 
+{   "pk": 2, 
+    "model": "push.msg", 
+    "fields": {
+        "status": null, 
+        "sender": null, 
+        "created": "2011-01-31 03:59:34", 
+        "content": "AUDIO", 
+        "device": 1, 
+        "audio": "audio/2011/01/31/unknown2unknown035934.mp4", 
+        "recipient": null,
+        "lat": 37.31029,
+        "lon": -122.04944
+        }
+}, 
+{   "pk": 3, 
+    "model": "push.msg", 
+    "fields": {
+        "status": null, 
+        "sender": null, 
+        "created": "2011-01-31 04:00:07", 
+        "content": "Emergency!", 
+        "device": 1, 
+        "audio": "", 
+        "recipient": null,
+        "lat": 37.41039,
+        "lon": -122.02944
+        }
+}, 
+{   "pk": 4, 
+    "model": "push.msg", 
+    "fields": {
+        "status": null, 
+        "sender": null, 
+        "created": "2011-01-31 04:01:03", 
+        "content": "AUDIO", 
+        "device": 2, 
+        "audio": "audio/2011/01/31/unknown2unknown040103.mp4", 
+        "recipient": null,
+        "lat": 37.451029,
+        "lon": -122.15944
+        }
+}, 
+{   "pk": 5, 
+    "model": "push.msg", 
+    "fields": {
+        "status": null, 
+        "sender": null, 
+        "created": "2011-01-31 04:01:27", 
+        "content": "Earthquake!", 
+        "device": 2, 
+        "audio": "", 
+        "recipient": null,
+        "lat": 37.41329,
+        "lon": -122.07944
+        }
+}]

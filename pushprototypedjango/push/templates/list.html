@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>{% block title %}List of Devices{% endblock %}</h2>
+<h2>{% block title %}Message Map{% endblock %}</h2>
 
 <dl>
 {% for d in devices %}
@@ -21,5 +21,110 @@
 {% endfor %}
 </table></dd>
 {% endfor %}
+<dd>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<article>
+  <p>Finding your location: <span id="status">checking...</span></p>    
+  <div id="map_canvas" style="width: 560px; height: 400px"></div>
+</article>
+
+<script>
+
+function dropPin(args) {
+    var marker = new google.maps.Marker({
+          position: args['latlng'], 
+          map: args['map'], 
+          title: args['title'], 
+      });
+     return marker;
+}
+
+function plotMsgs(map) {
+    {% for d in devices %}
+    {% for m in d.msg_set.all %}
+    var contentString = '<h1>Message</h1>'+
+        '<p>Sent by: {{m.sender}}</br>'+
+        'Created: {{m.created}}</br>'+
+        'Latitude: {{m.lat}}</br>'+
+        'Longitude: {{m.lon}}</br>'+
+        'Device: {{m.device.identifier}}</br>'+
+        'message: <a href="/message/get/{{m.pk}}">{% if m.isaudio %}Audio Message{% else %}{{m.content}}{% endif %}</p>';
+
+    var latlng = new google.maps.LatLng({{m.lat}}, {{m.lon}});
+    var pinArgs = {
+        latlng: latlng,
+        map: map,
+        title: '{{m.content}}',
+    };
+    var marker{{m.pk}} = dropPin(pinArgs);
+    var infowindow{{m.pk}} = new google.maps.InfoWindow({
+        content: contentString
+    });
+    google.maps.event.addListener(marker{{m.pk}}, 'click', function() {
+      infowindow{{m.pk}}.open(map,marker{{m.pk}});
+    });
+    {% endfor %}
+    {% endfor %}
+}
+
+function success(position) {
+// Center the map around current geolocation
+  var s = document.querySelector('#status');  
+  s.innerHTML = "found you!";
+  
+  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var myOptions = {
+    zoom: 15,
+    center: latlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  
+  var pinArgs = {
+      latlng: latlng,
+      map: map,
+      title:"You are here!",
+  };
+  dropPin(pinArgs);
+  plotMsgs(map);
+}
+    
+function error(msg) {
+// Center the map at CMUSV
+  var s = document.querySelector('#status');
+  s.innerHTML = typeof msg == 'string' ? msg : "failed to find you...";
+  var CMUSV_LAT = 37.41029;
+  var CMUSV_LON = -122.05944;
+  var latlng = new google.maps.LatLng(CMUSV_LAT, CMUSV_LON);
+  var myOptions = {
+    zoom: 15,
+    center: latlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  
+
+  var pinArgs = {
+      latlng: latlng,
+      map: map,
+      title:"CMU SV",
+  };
+  dropPin(pinArgs);
+  plotMsgs(map);
+}
+
+if (navigator.geolocation) {
+  error();
+  //navigator.geolocation.getCurrentPosition(success, error);
+} else {
+  error('not supported');
+}
+</script>
+</dd>
 </dl>
 {% endblock %}
