@@ -17,6 +17,8 @@ class Msg(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', null=True, blank=True)
     audio = models.FileField(upload_to='audio/%Y/%m/%d')
     created = models.DateTimeField(auto_now_add=True, editable=False)
-    
+    lat = models.FloatField()
+    lon = models.FloatField()
+
     def isaudio(self):
         return(self.content == 'AUDIO')
