@@ -43,12 +43,12 @@ function dropPin(args) {
 function plotMsgs(map) {
     {% for d in devices %}
     {% for m in d.msg_set.all %}
-    var contentString = '<h1>Message</h1>'+
-        '<p>Sent by: {{m.sender}}</br>'+
-        'Created: {{m.created}}</br>'+
-        'Latitude: {{m.lat}}</br>'+
-        'Longitude: {{m.lon}}</br>'+
-        'Device: {{m.device.identifier}}</br>'+
+    var contentString = '<h1>Msg Recieved</h1>'+
+        '<p>Sent by: {{m.sender}}<br>'+
+        'Created: {{m.created}}<br>'+
+        'Latitude: {{m.lat}}<br>'+
+        'Longitude: {{m.lon}}<br>'+
+        'Device: {{m.device.identifier}}<br>'+
         'message: <a href="/message/get/{{m.pk}}">{% if m.isaudio %}Audio Message{% else %}{{m.content}}{% endif %}</p>';
 
     var latlng = new google.maps.LatLng({{m.lat}}, {{m.lon}});
@@ -75,7 +75,7 @@ function success(position) {
   
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   var myOptions = {
-    zoom: 15,
+    zoom: 12,
     center: latlng,
     mapTypeControl: false,
     navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
@@ -83,12 +83,12 @@ function success(position) {
   };
   var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
   
-  var pinArgs = {
-      latlng: latlng,
-      map: map,
-      title:"You are here!",
-  };
-  dropPin(pinArgs);
+  // var pinArgs = {
+  //     latlng: latlng,
+  //     map: map,
+  //     title:"You are here!",
+  // };
+  // dropPin(pinArgs);
   plotMsgs(map);
 }
     
@@ -100,7 +100,7 @@ function error(msg) {
   var CMUSV_LON = -122.05944;
   var latlng = new google.maps.LatLng(CMUSV_LAT, CMUSV_LON);
   var myOptions = {
-    zoom: 15,
+    zoom: 12,
     center: latlng,
     mapTypeControl: false,
     navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
@@ -109,18 +109,18 @@ function error(msg) {
   var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
   
 
-  var pinArgs = {
-      latlng: latlng,
-      map: map,
-      title:"CMU SV",
-  };
-  dropPin(pinArgs);
+  // var pinArgs = {
+  //     latlng: latlng,
+  //     map: map,
+  //     title:"CMU SV",
+  // };
+  // dropPin(pinArgs);
   plotMsgs(map);
 }
 
 if (navigator.geolocation) {
-  error();
-  //navigator.geolocation.getCurrentPosition(success, error);
+  //error();
+  navigator.geolocation.getCurrentPosition(success, error);
 } else {
   error('not supported');
 }
