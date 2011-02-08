@@ -43,7 +43,7 @@ function dropPin(args) {
 function plotMsgs(map) {
     {% for d in devices %}
     {% for m in d.msg_set.all %}
-    var contentString = '<h1>Msg Recieved</h1>'+
+    var contentString = '<h1>Msg Received</h1>'+
         '<p>Sent by: {{m.sender}}<br>'+
         'Created: {{m.created}}<br>'+
         'Latitude: {{m.lat}}<br>'+
