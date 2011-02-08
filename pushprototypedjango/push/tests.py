@@ -99,7 +99,8 @@ class TestLoggedInViews(TestCase):
                 
     def testAudioMsgCreate(self):
         """ Add a Msg by http post"""
-        
+        CMUSV_LAT = 37.41029
+        CMUSV_LON = -122.05944
         #device = random.choice(Device.objects.all())
         device = Device.objects.all()[0]
         phoneid = device.identifier
@@ -107,7 +108,7 @@ class TestLoggedInViews(TestCase):
         self._createFile(filename=audioFile, filesize=100*1024)
         f = open(audioFile, "rb")
         response = self.client.post("/push/message/",
-                                    data={'phoneid':phoneid, 'audio':f})
+                                    data={'phoneid':phoneid, 'audio':f, 'lat':CMUSV_LAT, 'lon':CMUSV_LON})
         f.close() 
         self.assertEqual(response.status_code, 200, "Failed to move message from phone to web app")
 
